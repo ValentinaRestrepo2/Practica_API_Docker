@@ -1,24 +1,20 @@
 version: '3'
 services:
-  mongo:
-    image: mongo
+  database:
+    image: mongo:4.2.9
     ports:
-      - '27017:27017'
+      - 27018:27017
+    container_name: database
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
-      - mongo_data:/data/db
+      - ./volumes/db:/data/db
   app:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./src:/app/src
-  nginx:
-    image: nginx
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
+      - ./volumes/db:/data/db
 volumes:
   mongo_data:
