@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   database:
     image: mongo:4.2.9
@@ -6,15 +6,23 @@ services:
       - 27018:27017
     container_name: database
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: book
+      MONGO_INITDB_ROOT_PASSWORD: book123
     volumes:
       - ./volumes/db:/data/db
-  app:
-    build:
-      context: .
+  ldb:
+    container_name: ldb
+    image: nginx
+    build: custom_ldb
+    ports:
+      - 9090:80
+    depends_on:
+      - auth
+    
+  auth:
+    container_name: auth
+    build: 
+      context: auth_service
       dockerfile: Dockerfile
-    volumes:
-      - ./volumes/db:/data/db
-volumes:
-  mongo_data:
+    ports:
+      - 8080:8080
